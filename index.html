@@ -99,6 +99,7 @@
     .rushes-badge{position:absolute;top:12px;left:12px;z-index:2;padding:5px 12px;background:rgba(201,168,76,.9);border-radius:4px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#0a0c10}
     .rushes-player .yt-wrap{position:relative;padding-bottom:56.25%;height:0}
     .rushes-player .yt-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+    .rushes-player .yt-shield{position:absolute;top:0;left:0;right:0;height:40px;z-index:5;cursor:default}
     .rushes-progress{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.1);z-index:3}
     .rushes-progress-bar{height:100%;background:#c9a84c;width:0;transition:width .3s linear}
     .rushes-timer{position:absolute;bottom:10px;right:12px;z-index:3;font-size:.7rem;color:rgba(255,255,255,.7);font-variant-numeric:tabular-nums;letter-spacing:.5px;background:rgba(0,0,0,.6);padding:2px 8px;border-radius:3px}
@@ -342,7 +343,7 @@
     <!-- Film 6 -->
     <div class="film-module">
       <div class="rushes-player" id="tyaagRushes">
-        <span class="rushes-badge">Rushes</span>
+        <span class="rushes-badge">Preview</span>
         <div class="poster-overlay" id="tyaagPoster">
           <img src="posters/tyaag.jpg" alt="Tyaag – The Untold Story of RSS – Documentary Poster"/>
           <button class="rushes-play-btn" aria-label="Play rushes preview"></button>
@@ -680,9 +681,9 @@
   (function() {
     var RUSHES = {
       videoId: 'aO0DevxsNOM',
-      startSec: 80,   // 01:20
-      endSec: 110,     // 01:50
-      duration: 30
+      startSec: 0,
+      endSec: 161,     // 2:41
+      duration: 161
     };
     var player, pollId, ready = false;
 
@@ -701,6 +702,9 @@
 
     poster.addEventListener('click', function() { initPlayer(); });
 
+    // Block right-click on the player to prevent "Copy video URL"
+    document.getElementById('tyaagRushes').addEventListener('contextmenu', function(e) { e.preventDefault(); });
+
     function initPlayer() {
       if (!ready) { setTimeout(initPlayer, 100); return; }
       poster.style.display = 'none';
@@ -708,7 +712,13 @@
       progress.style.display = 'block';
       timer.style.display = 'block';
 
+      // Add shield to block top-right YT buttons (share/watch later)
+      var shield = document.createElement('div');
+      shield.className = 'yt-shield';
+      wrap.appendChild(shield);
+
       player = new YT.Player('tyaagPlayer', {
+        host: 'https://www.youtube-nocookie.com',
         videoId: RUSHES.videoId,
         playerVars: {
           autoplay: 1,
@@ -721,7 +731,8 @@
           disablekb: 1,
           fs: 0,
           iv_load_policy: 3,
-          playsinline: 1
+          playsinline: 1,
+          cc_load_policy: 0
         },
         events: {
           onReady: function() { startPolling(); },
@@ -752,7 +763,8 @@
         bar.style.width = pct + '%';
         var secs = Math.floor(elapsed);
         var rem = RUSHES.duration - secs;
-        timer.textContent = '0:' + String(secs).padStart(2,'0') + ' / 0:30';
+        var em = Math.floor(elapsed / 60), es = secs % 60;
+        timer.textContent = em + ':' + String(es).padStart(2,'0') + ' / 2:41';
       }, 250);
     }
 
@@ -766,7 +778,7 @@
       var el = document.createElement('div');
       el.className = 'rushes-ended';
       el.id = 'tyaagEnded';
-      el.innerHTML = '<p>Rushes Preview Complete</p><button id="tyaagReplay">Replay Excerpt</button>';
+      el.innerHTML = '<p>Preview Complete</p><button id="tyaagReplay">Replay</button>';
       document.getElementById('tyaagRushes').appendChild(el);
       document.getElementById('tyaagReplay').addEventListener('click', function() {
         el.style.display = 'none';
