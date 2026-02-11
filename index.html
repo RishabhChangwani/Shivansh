@@ -87,6 +87,26 @@
     .film-details .award-badge{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:6px 14px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:6px;font-size:.8rem;color:#c9a84c;font-weight:600;letter-spacing:.5px}
     .film-details .award-badge svg{width:16px;height:16px;fill:#c9a84c}
 
+    /* ── Rushes Video Player ── */
+    .rushes-player{position:relative;border-radius:10px;overflow:hidden;background:#000;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+    .rushes-player .poster-overlay{position:relative;cursor:pointer}
+    .rushes-player .poster-overlay img{width:100%;display:block}
+    .rushes-player .poster-overlay::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.35);transition:background .3s}
+    .rushes-player .poster-overlay:hover::after{background:rgba(0,0,0,.2)}
+    .rushes-play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;width:72px;height:72px;border-radius:50%;background:rgba(201,168,76,.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .3s,background .3s}
+    .rushes-play-btn:hover{transform:translate(-50%,-50%) scale(1.1);background:#e6c35c}
+    .rushes-play-btn::after{content:'';border-left:20px solid #0a0c10;border-top:12px solid transparent;border-bottom:12px solid transparent;margin-left:4px}
+    .rushes-badge{position:absolute;top:12px;left:12px;z-index:2;padding:5px 12px;background:rgba(201,168,76,.9);border-radius:4px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#0a0c10}
+    .rushes-player .yt-wrap{position:relative;padding-bottom:56.25%;height:0}
+    .rushes-player .yt-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+    .rushes-progress{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.1);z-index:3}
+    .rushes-progress-bar{height:100%;background:#c9a84c;width:0;transition:width .3s linear}
+    .rushes-timer{position:absolute;bottom:10px;right:12px;z-index:3;font-size:.7rem;color:rgba(255,255,255,.7);font-variant-numeric:tabular-nums;letter-spacing:.5px;background:rgba(0,0,0,.6);padding:2px 8px;border-radius:3px}
+    .rushes-ended{position:absolute;inset:0;background:rgba(10,12,16,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:4}
+    .rushes-ended p{color:#9aa0b0;font-size:.85rem;letter-spacing:1px;text-transform:uppercase}
+    .rushes-ended button{padding:12px 28px;border-radius:4px;background:#c9a84c;color:#0a0c10;font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;border:none;cursor:pointer;transition:background .3s}
+    .rushes-ended button:hover{background:#e6c35c}
+
     /* ── Clients ── */
     .clients{background:#0a0c10}
     .clients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px}
@@ -321,8 +341,17 @@
 
     <!-- Film 6 -->
     <div class="film-module">
-      <div class="film-poster">
-        <img src="posters/tyaag.jpg" alt="Tyaag – The Untold Story of RSS – Documentary Poster" loading="lazy"/>
+      <div class="rushes-player" id="tyaagRushes">
+        <span class="rushes-badge">Rushes</span>
+        <div class="poster-overlay" id="tyaagPoster">
+          <img src="posters/tyaag.jpg" alt="Tyaag – The Untold Story of RSS – Documentary Poster"/>
+          <button class="rushes-play-btn" aria-label="Play rushes preview"></button>
+        </div>
+        <div class="yt-wrap" id="tyaagYtWrap" style="display:none">
+          <div id="tyaagPlayer"></div>
+        </div>
+        <div class="rushes-progress" id="tyaagProgress" style="display:none"><div class="rushes-progress-bar" id="tyaagBar"></div></div>
+        <span class="rushes-timer" id="tyaagTimer" style="display:none">0:00 / 0:30</span>
       </div>
       <div class="film-details">
         <h3>Tyaag &mdash; The Untold Story of RSS</h3>
@@ -646,6 +675,109 @@
     setTimeout(() => { btn.textContent = 'Send Message'; btn.style.background = ''; }, 3000);
     this.reset();
   });
+
+  // ── Rushes Player: YouTube IFrame API ──
+  (function() {
+    var RUSHES = {
+      videoId: 'aO0DevxsNOM',
+      startSec: 80,   // 01:20
+      endSec: 110,     // 01:50
+      duration: 30
+    };
+    var player, pollId, ready = false;
+
+    // Load YT API
+    var tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+
+    window.onYouTubeIframeAPIReady = function() { ready = true; };
+
+    var poster = document.getElementById('tyaagPoster');
+    var wrap = document.getElementById('tyaagYtWrap');
+    var progress = document.getElementById('tyaagProgress');
+    var bar = document.getElementById('tyaagBar');
+    var timer = document.getElementById('tyaagTimer');
+
+    poster.addEventListener('click', function() { initPlayer(); });
+
+    function initPlayer() {
+      if (!ready) { setTimeout(initPlayer, 100); return; }
+      poster.style.display = 'none';
+      wrap.style.display = 'block';
+      progress.style.display = 'block';
+      timer.style.display = 'block';
+
+      player = new YT.Player('tyaagPlayer', {
+        videoId: RUSHES.videoId,
+        playerVars: {
+          autoplay: 1,
+          start: RUSHES.startSec,
+          end: RUSHES.endSec,
+          controls: 0,
+          modestbranding: 1,
+          rel: 0,
+          showinfo: 0,
+          disablekb: 1,
+          fs: 0,
+          iv_load_policy: 3,
+          playsinline: 1
+        },
+        events: {
+          onReady: function() { startPolling(); },
+          onStateChange: function(e) {
+            if (e.data === YT.PlayerState.ENDED || e.data === YT.PlayerState.PAUSED) {
+              var t = player.getCurrentTime();
+              if (t >= RUSHES.endSec - 0.5 || e.data === YT.PlayerState.ENDED) {
+                showEnded();
+              }
+            }
+            if (e.data === YT.PlayerState.PLAYING) { startPolling(); }
+          }
+        }
+      });
+    }
+
+    function startPolling() {
+      clearInterval(pollId);
+      pollId = setInterval(function() {
+        if (!player || !player.getCurrentTime) return;
+        var t = player.getCurrentTime();
+        // Enforce range
+        if (t < RUSHES.startSec) { player.seekTo(RUSHES.startSec, true); return; }
+        if (t >= RUSHES.endSec) { player.pauseVideo(); showEnded(); return; }
+        // Update UI
+        var elapsed = Math.max(0, t - RUSHES.startSec);
+        var pct = Math.min((elapsed / RUSHES.duration) * 100, 100);
+        bar.style.width = pct + '%';
+        var secs = Math.floor(elapsed);
+        var rem = RUSHES.duration - secs;
+        timer.textContent = '0:' + String(secs).padStart(2,'0') + ' / 0:30';
+      }, 250);
+    }
+
+    function showEnded() {
+      clearInterval(pollId);
+      bar.style.width = '100%';
+      timer.style.display = 'none';
+      // Build end screen
+      var existing = document.getElementById('tyaagEnded');
+      if (existing) { existing.style.display = 'flex'; return; }
+      var el = document.createElement('div');
+      el.className = 'rushes-ended';
+      el.id = 'tyaagEnded';
+      el.innerHTML = '<p>Rushes Preview Complete</p><button id="tyaagReplay">Replay Excerpt</button>';
+      document.getElementById('tyaagRushes').appendChild(el);
+      document.getElementById('tyaagReplay').addEventListener('click', function() {
+        el.style.display = 'none';
+        timer.style.display = 'block';
+        bar.style.width = '0%';
+        player.seekTo(RUSHES.startSec, true);
+        player.playVideo();
+        startPolling();
+      });
+    }
+  })();
 </script>
 </body>
 </html>
