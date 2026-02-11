@@ -265,8 +265,13 @@
 
     <!-- Film 1 -->
     <div class="film-module">
-      <div class="film-poster">
-        <img src="posters/heritage-of-kashmir.jpg" alt="The Heritage of Kashmir – Documentary Poster" loading="lazy"/>
+      <div class="rushes-player" data-vid="PsDDWUHPsq8" data-poster="posters/heritage-of-kashmir.jpg" data-label="Trailer" id="heritagePlayer">
+        <span class="rushes-badge">Trailer</span>
+        <div class="poster-overlay">
+          <img src="posters/heritage-of-kashmir.jpg" alt="The Heritage of Kashmir – Documentary Poster"/>
+          <button class="rushes-play-btn" aria-label="Play trailer"></button>
+        </div>
+        <div class="yt-wrap" style="display:none"><div></div></div>
       </div>
       <div class="film-details">
         <h3>The Heritage of Kashmir</h3>
@@ -285,8 +290,13 @@
 
     <!-- Film 2 -->
     <div class="film-module">
-      <div class="film-poster">
-        <img src="posters/unfinished-agenda.jpg" alt="The Unfinished Agenda – Documentary Poster" loading="lazy"/>
+      <div class="rushes-player" data-vid="s5soEdJuMxs" data-poster="posters/unfinished-agenda.jpg" data-label="Trailer" id="agendaPlayer">
+        <span class="rushes-badge">Trailer</span>
+        <div class="poster-overlay">
+          <img src="posters/unfinished-agenda.jpg" alt="The Unfinished Agenda – Documentary Poster"/>
+          <button class="rushes-play-btn" aria-label="Play trailer"></button>
+        </div>
+        <div class="yt-wrap" style="display:none"><div></div></div>
       </div>
       <div class="film-details">
         <h3>The Unfinished Agenda</h3>
@@ -344,17 +354,15 @@
 
     <!-- Film 6 -->
     <div class="film-module">
-      <div class="rushes-player" id="tyaagRushes">
+      <div class="rushes-player" data-vid="aO0DevxsNOM" data-poster="posters/tyaag.jpg" data-label="Preview" data-start="0" data-end="161" id="tyaagPlayer">
         <span class="rushes-badge">Preview</span>
-        <div class="poster-overlay" id="tyaagPoster">
+        <div class="poster-overlay">
           <img src="posters/tyaag.jpg" alt="Tyaag – The Untold Story of RSS – Documentary Poster"/>
-          <button class="rushes-play-btn" aria-label="Play rushes preview"></button>
+          <button class="rushes-play-btn" aria-label="Play preview"></button>
         </div>
-        <div class="yt-wrap" id="tyaagYtWrap" style="display:none">
-          <div id="tyaagPlayer"></div>
-        </div>
-        <div class="rushes-progress" id="tyaagProgress" style="display:none"><div class="rushes-progress-bar" id="tyaagBar"></div></div>
-        <span class="rushes-timer" id="tyaagTimer" style="display:none">0:00 / 0:30</span>
+        <div class="yt-wrap" style="display:none"><div></div></div>
+        <div class="rushes-progress" style="display:none"><div class="rushes-progress-bar"></div></div>
+        <span class="rushes-timer" style="display:none"></span>
       </div>
       <div class="film-details">
         <h3>Tyaag &mdash; The Untold Story of RSS</h3>
@@ -679,135 +687,129 @@
     this.reset();
   });
 
-  // ── Rushes Player: YouTube IFrame API ──
+  // ── Video Player System: YouTube IFrame API ──
   (function() {
-    var RUSHES = {
-      videoId: 'aO0DevxsNOM',
-      startSec: 0,
-      endSec: 161,     // 2:41
-      duration: 161
-    };
-    var player, pollId, ready = false;
-
-    // Load YT API
+    var apiReady = false;
     var tag = document.createElement('script');
     tag.src = 'https://www.youtube.com/iframe_api';
     document.head.appendChild(tag);
+    window.onYouTubeIframeAPIReady = function() { apiReady = true; };
 
-    window.onYouTubeIframeAPIReady = function() { ready = true; };
+    // Find all players on the page
+    document.querySelectorAll('.rushes-player').forEach(function(container) {
+      var videoId = container.dataset.vid;
+      var startSec = parseInt(container.dataset.start) || 0;
+      var endSec = parseInt(container.dataset.end) || 0; // 0 = play full video
+      var isLocked = endSec > 0;
 
-    var poster = document.getElementById('tyaagPoster');
-    var wrap = document.getElementById('tyaagYtWrap');
-    var progress = document.getElementById('tyaagProgress');
-    var bar = document.getElementById('tyaagBar');
-    var timer = document.getElementById('tyaagTimer');
+      var posterEl = container.querySelector('.poster-overlay');
+      var wrap = container.querySelector('.yt-wrap');
+      var playerDiv = wrap.querySelector('div');
+      var progressEl = container.querySelector('.rushes-progress');
+      var barEl = container.querySelector('.rushes-progress-bar');
+      var timerEl = container.querySelector('.rushes-timer');
 
-    poster.addEventListener('click', function() { initPlayer(); });
+      var ytPlayer, pollId;
 
-    // Block right-click on the player to prevent "Copy video URL"
-    document.getElementById('tyaagRushes').addEventListener('contextmenu', function(e) { e.preventDefault(); });
+      // Block right-click
+      container.addEventListener('contextmenu', function(e) { e.preventDefault(); });
 
-    function initPlayer() {
-      if (!ready) { setTimeout(initPlayer, 100); return; }
-      poster.style.display = 'none';
-      wrap.style.display = 'block';
-      progress.style.display = 'block';
-      timer.style.display = 'block';
+      // Click poster to play
+      posterEl.addEventListener('click', function() { initPlayer(); });
 
-      // Full transparent overlay blocks right-click + all iframe interaction
-      // Added AFTER first play so autoplay isn't blocked
-      var shieldFull = document.createElement('div');
-      shieldFull.className = 'yt-shield-full';
-      shieldFull.addEventListener('click', function() {
-        if (!player) return;
-        var state = player.getPlayerState();
-        if (state === YT.PlayerState.PLAYING) player.pauseVideo();
-        else player.playVideo();
-      });
-      // Solid shields to hide YT title bar, 3-dot menu, and watermark
-      var shieldTop = document.createElement('div');
-      shieldTop.className = 'yt-shield-top';
-      wrap.appendChild(shieldTop);
-      var shieldBot = document.createElement('div');
-      shieldBot.className = 'yt-shield-bottom';
-      wrap.appendChild(shieldBot);
+      function initPlayer() {
+        if (!apiReady) { setTimeout(initPlayer, 100); return; }
+        posterEl.style.display = 'none';
+        wrap.style.display = 'block';
+        if (progressEl && isLocked) progressEl.style.display = 'block';
+        if (timerEl && isLocked) timerEl.style.display = 'block';
 
-      player = new YT.Player('tyaagPlayer', {
-        host: 'https://www.youtube-nocookie.com',
-        videoId: RUSHES.videoId,
-        playerVars: {
-          autoplay: 1,
-          start: RUSHES.startSec,
-          end: RUSHES.endSec,
-          controls: 0,
-          modestbranding: 1,
-          rel: 0,
-          showinfo: 0,
-          disablekb: 1,
-          fs: 0,
-          iv_load_policy: 3,
-          playsinline: 1,
-          cc_load_policy: 0
-        },
-        events: {
-          onReady: function() { startPolling(); },
-          onStateChange: function(e) {
-            if (e.data === YT.PlayerState.ENDED || e.data === YT.PlayerState.PAUSED) {
-              var t = player.getCurrentTime();
-              if (t >= RUSHES.endSec - 0.5 || e.data === YT.PlayerState.ENDED) {
-                showEnded();
+        // Shields to hide YT UI
+        var shieldTop = document.createElement('div');
+        shieldTop.className = 'yt-shield-top';
+        wrap.appendChild(shieldTop);
+        var shieldBot = document.createElement('div');
+        shieldBot.className = 'yt-shield-bottom';
+        wrap.appendChild(shieldBot);
+
+        // Full overlay added after first play
+        var shieldFull = document.createElement('div');
+        shieldFull.className = 'yt-shield-full';
+        shieldFull.addEventListener('click', function() {
+          if (!ytPlayer) return;
+          var s = ytPlayer.getPlayerState();
+          if (s === YT.PlayerState.PLAYING) ytPlayer.pauseVideo();
+          else ytPlayer.playVideo();
+        });
+
+        var vars = {
+          autoplay: 1, controls: 0, modestbranding: 1, rel: 0,
+          showinfo: 0, disablekb: 1, fs: 0, iv_load_policy: 3,
+          playsinline: 1, cc_load_policy: 0
+        };
+        if (startSec) vars.start = startSec;
+        if (endSec) vars.end = endSec;
+
+        ytPlayer = new YT.Player(playerDiv, {
+          host: 'https://www.youtube-nocookie.com',
+          videoId: videoId,
+          playerVars: vars,
+          events: {
+            onReady: function() { if (isLocked) startPolling(); },
+            onStateChange: function(e) {
+              if (e.data === YT.PlayerState.PLAYING) {
+                if (!shieldFull.parentNode) wrap.appendChild(shieldFull);
+                if (isLocked) startPolling();
+              }
+              if (isLocked && (e.data === YT.PlayerState.ENDED || e.data === YT.PlayerState.PAUSED)) {
+                var t = ytPlayer.getCurrentTime();
+                if (t >= endSec - 0.5 || e.data === YT.PlayerState.ENDED) showEnded();
               }
             }
-            if (e.data === YT.PlayerState.PLAYING) {
-              // Insert shield on first play so iframe can't be right-clicked
-              if (!shieldFull.parentNode) wrap.appendChild(shieldFull);
-              startPolling();
-            }
           }
-        }
-      });
-    }
+        });
+      }
 
-    function startPolling() {
-      clearInterval(pollId);
-      pollId = setInterval(function() {
-        if (!player || !player.getCurrentTime) return;
-        var t = player.getCurrentTime();
-        // Enforce range
-        if (t < RUSHES.startSec) { player.seekTo(RUSHES.startSec, true); return; }
-        if (t >= RUSHES.endSec) { player.pauseVideo(); showEnded(); return; }
-        // Update UI
-        var elapsed = Math.max(0, t - RUSHES.startSec);
-        var pct = Math.min((elapsed / RUSHES.duration) * 100, 100);
-        bar.style.width = pct + '%';
-        var secs = Math.floor(elapsed);
-        var rem = RUSHES.duration - secs;
-        var em = Math.floor(elapsed / 60), es = secs % 60;
-        timer.textContent = em + ':' + String(es).padStart(2,'0') + ' / 2:41';
-      }, 250);
-    }
+      function startPolling() {
+        if (!isLocked) return;
+        var duration = endSec - startSec;
+        clearInterval(pollId);
+        pollId = setInterval(function() {
+          if (!ytPlayer || !ytPlayer.getCurrentTime) return;
+          var t = ytPlayer.getCurrentTime();
+          if (t < startSec) { ytPlayer.seekTo(startSec, true); return; }
+          if (t >= endSec) { ytPlayer.pauseVideo(); showEnded(); return; }
+          var elapsed = Math.max(0, t - startSec);
+          var pct = Math.min((elapsed / duration) * 100, 100);
+          if (barEl) barEl.style.width = pct + '%';
+          if (timerEl) {
+            var m = Math.floor(elapsed / 60), s = Math.floor(elapsed) % 60;
+            var tm = Math.floor(duration / 60), ts = duration % 60;
+            timerEl.textContent = m + ':' + String(s).padStart(2,'0') + ' / ' + tm + ':' + String(ts).padStart(2,'0');
+          }
+        }, 250);
+      }
 
-    function showEnded() {
-      clearInterval(pollId);
-      bar.style.width = '100%';
-      timer.style.display = 'none';
-      // Build end screen
-      var existing = document.getElementById('tyaagEnded');
-      if (existing) { existing.style.display = 'flex'; return; }
-      var el = document.createElement('div');
-      el.className = 'rushes-ended';
-      el.id = 'tyaagEnded';
-      el.innerHTML = '<p>Preview Complete</p><button id="tyaagReplay">Replay</button>';
-      document.getElementById('tyaagRushes').appendChild(el);
-      document.getElementById('tyaagReplay').addEventListener('click', function() {
-        el.style.display = 'none';
-        timer.style.display = 'block';
-        bar.style.width = '0%';
-        player.seekTo(RUSHES.startSec, true);
-        player.playVideo();
-        startPolling();
-      });
-    }
+      function showEnded() {
+        clearInterval(pollId);
+        if (barEl) barEl.style.width = '100%';
+        if (timerEl) timerEl.style.display = 'none';
+        var ended = container.querySelector('.rushes-ended');
+        if (ended) { ended.style.display = 'flex'; return; }
+        ended = document.createElement('div');
+        ended.className = 'rushes-ended';
+        ended.innerHTML = '<p>Preview Complete</p><button>Replay</button>';
+        container.appendChild(ended);
+        ended.querySelector('button').addEventListener('click', function() {
+          ended.style.display = 'none';
+          if (timerEl) timerEl.style.display = 'block';
+          if (barEl) barEl.style.width = '0%';
+          ytPlayer.seekTo(startSec, true);
+          ytPlayer.playVideo();
+          startPolling();
+        });
+      }
+    });
   })();
 </script>
 </body>
