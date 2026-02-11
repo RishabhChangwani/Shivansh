@@ -715,9 +715,15 @@
       timer.style.display = 'block';
 
       // Full transparent overlay blocks right-click + all iframe interaction
+      // Added AFTER first play so autoplay isn't blocked
       var shieldFull = document.createElement('div');
       shieldFull.className = 'yt-shield-full';
-      wrap.appendChild(shieldFull);
+      shieldFull.addEventListener('click', function() {
+        if (!player) return;
+        var state = player.getPlayerState();
+        if (state === YT.PlayerState.PLAYING) player.pauseVideo();
+        else player.playVideo();
+      });
       // Solid shields to hide YT title bar, 3-dot menu, and watermark
       var shieldTop = document.createElement('div');
       shieldTop.className = 'yt-shield-top';
@@ -752,7 +758,11 @@
                 showEnded();
               }
             }
-            if (e.data === YT.PlayerState.PLAYING) { startPolling(); }
+            if (e.data === YT.PlayerState.PLAYING) {
+              // Insert shield on first play so iframe can't be right-clicked
+              if (!shieldFull.parentNode) wrap.appendChild(shieldFull);
+              startPolling();
+            }
           }
         }
       });
