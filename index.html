@@ -4,6 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Shivansh Khanna Films</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='12' fill='%230a0c10'/%3E%3Ctext x='50' y='58' text-anchor='middle' dominant-baseline='middle' fill='%23c9a84c' font-family='Helvetica,Arial,sans-serif' font-weight='700' font-size='32'%3ESKF%3C/text%3E%3C/svg%3E">
   <meta name="description" content="Shivansh Khanna Films – Independent documentaries exploring culture, heritage, and untold narratives. Co-founded by Shivansh Khanna & Rajan Khanna."/>
   <style>
     /* ── Reset & Base ── */
@@ -42,8 +43,11 @@
     /* ── Hero ── */
     .hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;background:linear-gradient(135deg,#0a0c10 0%,#141824 40%,#1a1228 70%,#0a0c10 100%)}
     .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(201,168,76,.08) 0%,transparent 70%)}
-    .hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:200px;background:linear-gradient(transparent,#0a0c10)}
-    .hero-content{position:relative;z-index:1;padding:0 24px}
+    .hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:200px;background:linear-gradient(transparent,#0a0c10);z-index:1}
+    .hero-video-bg{position:absolute;inset:0;z-index:0;overflow:hidden}
+    .hero-video-bg iframe{width:100vw;height:56.25vw;min-height:100vh;min-width:177.78vh;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;border:none}
+    .hero-video-bg::after{content:'';position:absolute;inset:0;background:rgba(10,12,16,.55);z-index:1}
+    .hero-content{position:relative;z-index:2;padding:0 24px}
     .hero-overline{text-transform:uppercase;letter-spacing:5px;font-size:.7rem;color:#c9a84c;margin-bottom:20px;font-weight:500}
     .hero h1{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:700;color:#f0f2f8;line-height:1.1;margin-bottom:20px}
     .hero h1 em{font-style:normal;color:#c9a84c}
@@ -220,6 +224,7 @@
 
 <!-- ── Hero ── -->
 <section class="hero" id="hero">
+  <div class="hero-video-bg" id="heroBgVideo"><div id="heroBgPlayer"></div></div>
   <div class="hero-content">
     <p class="hero-overline">Independent Documentary Production</p>
     <h1>Preserving Truth Through<br>Stories That <em>Matter</em></h1>
@@ -301,11 +306,13 @@
         <div class="yt-wrap" style="display:none"><div></div></div>
       </div>
       <div class="film-details">
-        <h3>The Unfinished Agenda</h3>
+        <h3>The Unfinished Agenda: The Story of Pakistan Occupied Jammu, Kashmir &amp; Ladakh</h3>
         <div class="film-info">
           <span>Documentary</span>
+          <span>1 Hour 1 Minute</span>
         </div>
         <p class="logline">A documentary examining Pakistan-occupied Jammu, Kashmir, and Ladakh &mdash; a region lost in 1947. Featuring Indian intellectuals like Tilak Devasher, Sushant Sareen, Maj. Gen. G.D. Bakshi, and Jamyang Tsering, it explores the region's geography, culture, and complex political history.</p>
+        <div class="broadcast"><strong>Broadcast on:</strong> NewsX</div>
       </div>
     </div>
 
@@ -316,11 +323,13 @@
       </div>
       <div class="film-details">
         <h3>Sanskritik Jammu Kashmir</h3>
+        <p style="font-size:.85rem;color:#9aa0b0;margin-bottom:8px">Indira Gandhi National Centre for the Arts</p>
         <div class="film-info">
           <span>Documentary</span>
+          <span>59 Minutes</span>
           <span>IGNCA &bull; Ministry of Culture</span>
         </div>
-        <p class="logline">Created in collaboration with IGNCA, Ministry of Culture, Govt. of India. The film documents the cultural richness of Jammu &amp; Kashmir, emphasizing its civilizational, spiritual, and historical contributions.</p>
+        <p class="logline">Created in collaboration with IGNCA (Indira Gandhi National Centre for the Arts), Ministry of Culture, Govt. of India. The film presents the spiritual and cultural heritage of Jammu &amp; Kashmir, showcasing its ancient pilgrimage routes, spiritual travel destinations, tourist circuits, and the civilizational legacy that connects this region to India's living traditions.</p>
       </div>
     </div>
 
@@ -333,7 +342,7 @@
         <h3>Gandhara: Yesterday's Heritage of Today's Afghanistan and Pakistan</h3>
         <div class="film-info">
           <span>Documentary</span>
-          <span class="status-badge">Shooting in Progress</span>
+          <span class="status-badge">Post Production</span>
         </div>
         <p class="logline">A documentary tracing the Vedic, Buddhist, and Hindu legacy of the ancient Gandhara region. The film juxtaposes Gandhara's historical glory with its present-day context.</p>
       </div>
@@ -370,6 +379,7 @@
         <h3>Tyaag &mdash; The Untold Story of RSS</h3>
         <div class="film-info">
           <span>Documentary</span>
+          <span>23 Minutes</span>
         </div>
         <p class="logline">A documentary examining the historical foundations, contributions, and lesser-known narratives surrounding the RSS.</p>
         <div class="award-badge">
@@ -393,7 +403,7 @@
       <div class="client-item"><img src="logos/ministry-of-culture.jpg" alt="Ministry of Culture, Govt. of India" loading="lazy"/></div>
       <div class="client-item"><img src="logos/ignca.png" alt="IGNCA" loading="lazy"/></div>
       <div class="client-item"><img src="logos/zee-news.jpg" alt="Zee News" loading="lazy"/></div>
-      <div class="client-item client-item--dark"><img src="logos/aastha.jpg" alt="Aastha TV" loading="lazy"/></div>
+      <div class="client-item"><img src="logos/aastha.jpg" alt="Aastha TV" loading="lazy"/></div>
       <div class="client-item"><img src="logos/epic-tv.jpg" alt="Epic TV" loading="lazy"/></div>
       <div class="client-item"><img src="logos/epic-on.png" alt="Epic ON" loading="lazy"/></div>
       <div class="client-item"><img src="logos/loksabha-tv.jpg" alt="Lok Sabha TV" loading="lazy"/></div>
@@ -505,7 +515,7 @@
 
     <!-- The Unfinished Agenda -->
     <div class="press-film-group">
-      <h3>The Unfinished Agenda</h3>
+      <h3>The Unfinished Agenda: The Story of Pakistan Occupied Jammu, Kashmir &amp; Ladakh</h3>
       <div class="press-grid">
         <div class="press-card">
           <p class="press-source">NewsX &mdash; Facebook</p>
@@ -572,6 +582,10 @@
         <h3>Rajan Khanna</h3>
         <span class="role">Co-Founder &amp; Writer</span>
         <p>The creative force behind the scripts of every Shivansh Khanna Films documentary. Rajan brings deep research, narrative clarity, and a profound understanding of India's civilizational heritage to every project.</p>
+        <div class="distinctions">
+          <span class="distinction-tag">Ex-Chairman, Punjabi Sahitya Academy, Govt. of Maharashtra</span>
+          <span class="distinction-tag">Research Scholar on Sikh, Islam &amp; Geopolitics</span>
+        </div>
       </div>
     </div>
   </div>
@@ -586,7 +600,10 @@
       <p class="section-subtitle mx-auto">Have a story to tell? Let's create something meaningful together.</p>
     </div>
     <div class="contact-grid">
-      <form class="contact-form" id="contactForm" action="#" method="POST">
+      <form class="contact-form" id="contactForm" action="https://formsubmit.co/shivanshkhannafilms@gmail.com" method="POST">
+        <input type="hidden" name="_next" value="https://shivanshkhannafilms.com/#contact">
+        <input type="hidden" name="_subject" value="New message from SKF website">
+        <input type="hidden" name="_captcha" value="false">
         <div class="form-group">
           <label for="name">Name</label>
           <input type="text" id="name" name="name" placeholder="Your full name" required/>
@@ -636,17 +653,13 @@
           <h4>Follow Us</h4>
         </div>
         <div class="footer-social">
-          <!-- Instagram -->
-          <a href="https://www.instagram.com/reel/DTkkEX0giVA/" aria-label="Instagram" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
-          </a>
-          <!-- YouTube -->
-          <a href="#" aria-label="YouTube">
-            <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-          </a>
           <!-- Facebook -->
-          <a href="#" aria-label="Facebook">
+          <a href="https://www.facebook.com/shivanshkhannaa/" aria-label="Facebook" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+          <!-- Instagram -->
+          <a href="https://www.instagram.com/shivanshkhannaa/?hl=en" aria-label="Instagram" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
           </a>
         </div>
       </div>
@@ -679,14 +692,32 @@
     });
   });
 
-  // Contact form
+  // Contact form (AJAX via FormSubmit.co)
   document.getElementById('contactForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const btn = this.querySelector('button');
-    btn.textContent = 'Message Sent!';
-    btn.style.background = '#2d8a4e';
-    setTimeout(() => { btn.textContent = 'Send Message'; btn.style.background = ''; }, 3000);
-    this.reset();
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    fetch(this.action, {
+      method: 'POST',
+      body: new FormData(this),
+      headers: { 'Accept': 'application/json' }
+    }).then(function(r) {
+      if (r.ok) {
+        btn.textContent = 'Message Sent!';
+        btn.style.background = '#2d8a4e';
+        e.target.reset();
+      } else {
+        btn.textContent = 'Error - Try Again';
+        btn.style.background = '#8a2d2d';
+      }
+    }).catch(function() {
+      btn.textContent = 'Error - Try Again';
+      btn.style.background = '#8a2d2d';
+    }).finally(function() {
+      btn.disabled = false;
+      setTimeout(function() { btn.textContent = 'Send Message'; btn.style.background = ''; }, 3000);
+    });
   });
 
   // ── Video Player System: YouTube IFrame API ──
@@ -726,12 +757,14 @@
         if (progressEl && isLocked) progressEl.style.display = 'block';
         if (timerEl && isLocked) timerEl.style.display = 'block';
 
-        // Shields to hide YT UI
+        // Shields to hide YT UI (solid for locked/preview, transparent for trailers)
         var shieldTop = document.createElement('div');
         shieldTop.className = 'yt-shield-top';
+        if (!isLocked) shieldTop.style.background = 'transparent';
         wrap.appendChild(shieldTop);
         var shieldBot = document.createElement('div');
         shieldBot.className = 'yt-shield-bottom';
+        if (!isLocked) shieldBot.style.background = 'transparent';
         wrap.appendChild(shieldBot);
 
         // Full overlay added after first play
@@ -812,6 +845,40 @@
         });
       }
     });
+  })();
+
+  // ── Hero Background Video Player ──
+  (function() {
+    var bgVideoId = 'kpu4C8ABI30';
+    var bgStart = 24;
+    var bgEnd = 80;
+    var bgPlayerDiv = document.getElementById('heroBgPlayer');
+    if (!bgPlayerDiv) return;
+
+    function initBgPlayer() {
+      if (typeof YT === 'undefined' || !YT.Player) { setTimeout(initBgPlayer, 200); return; }
+      var bgPlayer = new YT.Player('heroBgPlayer', {
+        host: 'https://www.youtube-nocookie.com',
+        videoId: bgVideoId,
+        playerVars: {
+          autoplay: 1, controls: 0, mute: 1, modestbranding: 1, rel: 0,
+          showinfo: 0, disablekb: 1, fs: 0, iv_load_policy: 3,
+          playsinline: 1, cc_load_policy: 0, start: bgStart, end: bgEnd, loop: 0
+        },
+        events: {
+          onReady: function(e) { e.target.mute(); e.target.playVideo(); },
+          onStateChange: function(e) {
+            if (e.data === YT.PlayerState.ENDED) {
+              bgPlayer.seekTo(bgStart, true);
+              bgPlayer.playVideo();
+            }
+          }
+        }
+      });
+      // Block right-click on hero video
+      document.getElementById('heroBgVideo').addEventListener('contextmenu', function(ev) { ev.preventDefault(); });
+    }
+    initBgPlayer();
   })();
 </script>
 </body>
