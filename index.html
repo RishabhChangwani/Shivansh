@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Shivansh Khanna Films</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='12' fill='%230a0c10'/%3E%3Ctext x='50' y='58' text-anchor='middle' dominant-baseline='middle' fill='%23c9a84c' font-family='Helvetica,Arial,sans-serif' font-weight='700' font-size='32'%3ESKF%3C/text%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <meta name="description" content="Shivansh Khanna Films – Independent documentaries exploring culture, heritage, and untold narratives. Co-founded by Shivansh Khanna & Rajan Khanna."/>
   <style>
     /* ── Reset & Base ── */
@@ -32,8 +32,9 @@
     /* ── Navigation ── */
     nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,12,16,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06);transition:background .3s}
     .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1140px;margin:0 auto;padding:0 24px}
-    .nav-logo{font-size:1.15rem;font-weight:700;color:#f0f2f8;letter-spacing:1px}
+    .nav-logo{font-size:1.15rem;font-weight:700;color:#f0f2f8;letter-spacing:1px;display:flex;align-items:center;gap:10px}
     .nav-logo span{color:#c9a84c}
+    .nav-logo-mark{width:36px;height:36px;background:#0a0c10;border:1.5px solid rgba(201,168,76,.5);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#c9a84c;letter-spacing:1.5px;flex-shrink:0}
     .nav-links{display:flex;gap:28px}
     .nav-links a{color:#9aa0b0;font-size:.85rem;text-transform:uppercase;letter-spacing:1.5px;font-weight:500;transition:color .2s}
     .nav-links a:hover,.nav-links a.active{color:#c9a84c}
@@ -206,7 +207,7 @@
 <!-- ── Navigation ── -->
 <nav>
   <div class="nav-inner">
-    <a href="#hero" class="nav-logo">SHIVANSH <span>KHANNA</span> FILMS</a>
+    <a href="#hero" class="nav-logo"><span class="nav-logo-mark">SKF</span>SHIVANSH <span>KHANNA</span> FILMS</a>
     <div class="nav-links" id="navLinks">
       <a href="#hero">Home</a>
       <a href="#about">About</a>
@@ -638,7 +639,7 @@
   <div class="container">
     <div class="footer-inner">
       <div class="footer-brand">
-        <span class="nav-logo">SHIVANSH <span>KHANNA</span> FILMS</span>
+        <span class="nav-logo"><span class="nav-logo-mark">SKF</span>SHIVANSH <span>KHANNA</span> FILMS</span>
         <p>Preserving truth through stories that matter.</p>
       </div>
       <div class="footer-links">
